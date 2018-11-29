@@ -23,6 +23,9 @@ def number_of_hashtags(tweetText):
 def isRetweet(tweetText):
         return 'RT @' in tweetText
 
+def sentiment_analysis(tweetText):
+        pass
+
 def get_msg():
         api = auth()
         response = api.GetSearch(term='Trump',count=100,since='2018-11-22')
@@ -31,7 +34,7 @@ def get_msg():
         fileAddress = 'C:\\Users\Gustavo\Desktop\Projeto - BD\Oficial\populate.dml'
         f = open(fileAddress,'w')
         for r in response:       
-                f.write('INSERT INTO TWEET (CREATED_AT, FAVORITE_COUNT, TWEET_ID, LANG, RETWEET_COUNT, IS_RETWEET, HASHTAG_COUNT, TEXT) VALUES (' \
+                f.write('INSERT INTO TWEET (CREATED_AT, FAVORITE_COUNT, TWEET_ID, LANG, RETWEET_COUNT, IS_RETWEET, HASHTAG_COUNT, TEXT, TWEET_SENTIMENT, TWEET_LENGTH) VALUES (' \
                 + "\'" + format_date(r.__getattribute__("created_at")) + "\'" + ', ' \
                 + str(r.__getattribute__("favorite_count")) + ', ' \
                 + str(r.__getattribute__("id")) + ', ' \
@@ -39,7 +42,9 @@ def get_msg():
                 + str(r.__getattribute__("retweet_count")) + ', ' \
                 + str(isRetweet(str(r.__getattribute__("text").replace("\n","\\n").encode("utf-8")).replace("\'", "\'\'").replace("\"", "\\\"").replace("\\'", "'"))) + ', ' \
                 + str(number_of_hashtags(str(r.__getattribute__("text").replace("\n","\\n").encode("utf-8")).replace("\'", "\'\'").replace("\"", "\\\"").replace("\\'", "'"))) + ', ' \
-                + "\'" + str(r.__getattribute__("text").replace("\n","\\n").encode("utf-8")).replace("\'", "\'\'").replace("\"", "\\\"").replace("\\'", "'") + "\'" + ");\n")
+                + "\'" + str(r.__getattribute__("text").replace("\n","\\n").encode("utf-8")).replace("\'", "\'\'").replace("\"", "\\\"").replace("\\'", "'") + "\'" + ', ' \
+                #+ "\'" + sentiment_analysis(str(r.__getattribute__("text").replace("\n","\\n").encode("utf-8")).replace("\'", "\'\'").replace("\"", "\\\"").replace("\\'", "'")) + "\'" \
+                + str(len(str(r.__getattribute__("text").replace("\n","\\n").encode("utf-8")).replace("\'", "\'\'").replace("\"", "\\\"").replace("\\'", "'"))) + ");\n")
         
                 """u = r.__getattribute__("user")
                 f.write('INSERT INTO USER (CREATED_AT, DESCRIPTION, FAVOURITES_COUNT, FOLLOWERS_COUNT, FRIENDS_COUNT, ' \
