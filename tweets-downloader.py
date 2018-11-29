@@ -13,6 +13,13 @@ def format_date(dateString):
         monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         return dateString.split(" ")[2] + "/" + str(monthNames.index(dateString.split(" ")[1]) + 1) + "/" + dateString.split(" ")[5] + " " + dateString.split(" ")[3]
 
+def number_of_hashtags(tweetText):
+        number = 0
+        for i in range(len(tweetText)):
+            if tweetText[i] == '#':
+                number += 1
+        return number
+
 def get_msg():
         api = auth()
         response = api.GetSearch(term='Trump',count=180,since='2018-11-28')
@@ -21,12 +28,13 @@ def get_msg():
         fileAddress = 'C:\\Users\Gustavo\Desktop\Projeto - BD\Oficial\populate.dml'
         f = open(fileAddress,'w')
         for r in response:       
-                f.write('INSERT INTO TWEET (CREATED_AT, FAVORITE_COUNT, TWEET_ID, LANG, RETWEET_COUNT, TEXT) VALUES (' \
+                f.write('INSERT INTO TWEET (CREATED_AT, FAVORITE_COUNT, TWEET_ID, LANG, RETWEET_COUNT, HASHTAG_COUNT, TEXT) VALUES (' \
                 + "\'" + format_date(r.__getattribute__("created_at")) + "\'" + ', ' \
                 + str(r.__getattribute__("favorite_count")) + ', ' \
                 + str(r.__getattribute__("id")) + ', ' \
                 + "\'" + r.__getattribute__("lang") + "\'" + ', ' \
                 + str(r.__getattribute__("retweet_count")) + ', ' \
+                + str(number_of_hashtags(str(r.__getattribute__("text").replace("\n","\\n").encode("utf-8")).replace("\'", "\'\'").replace("\"", "\\\"").replace("\\'", "'"))) + ', ' \
                 + "\'" + str(r.__getattribute__("text").replace("\n","\\n").encode("utf-8")).replace("\'", "\'\'").replace("\"", "\\\"").replace("\\'", "'") + "\'" + ");\n")
         
                 u = r.__getattribute__("user")
